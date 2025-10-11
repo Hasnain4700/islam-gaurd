@@ -86,8 +86,12 @@ function initializeApp() {
     showSection('home');
     
     // Hide bottom navigation by default
-    bottomNav.classList.remove('show');
-    mainContent.classList.remove('with-bottom-nav');
+    if (bottomNav) {
+        bottomNav.classList.remove('show');
+    }
+    if (mainContent) {
+        mainContent.classList.remove('with-bottom-nav');
+    }
     
     // Add smooth scrolling
     document.documentElement.style.scrollBehavior = 'smooth';
@@ -182,8 +186,12 @@ function updateUIForLoggedInUser(user) {
     bottomProfileNav.style.display = 'flex';
     
     // Show bottom navigation
-    bottomNav.classList.add('show');
-    mainContent.classList.add('with-bottom-nav');
+    if (bottomNav) {
+        bottomNav.classList.add('show');
+    }
+    if (mainContent) {
+        mainContent.classList.add('with-bottom-nav');
+    }
     
     // Update user info
     userAvatar.src = user.photoURL || 'https://via.placeholder.com/40';
@@ -205,8 +213,12 @@ function updateUIForLoggedOutUser() {
     bottomProfileNav.style.display = 'none';
     
     // Hide bottom navigation
-    bottomNav.classList.remove('show');
-    mainContent.classList.remove('with-bottom-nav');
+    if (bottomNav) {
+        bottomNav.classList.remove('show');
+    }
+    if (mainContent) {
+        mainContent.classList.remove('with-bottom-nav');
+    }
     
     // Clear profile info
     profileAvatar.src = '';
@@ -643,12 +655,20 @@ function showSection(sectionName) {
     // Handle bottom navigation visibility
     if (sectionName === 'home' && !currentUser) {
         // Hide bottom nav on home section when not logged in
-        bottomNav.classList.remove('show');
-        mainContent.classList.remove('with-bottom-nav');
+        if (bottomNav) {
+            bottomNav.classList.remove('show');
+        }
+        if (mainContent) {
+            mainContent.classList.remove('with-bottom-nav');
+        }
     } else if (currentUser) {
         // Show bottom nav when user is logged in
-        bottomNav.classList.add('show');
-        mainContent.classList.add('with-bottom-nav');
+        if (bottomNav) {
+            bottomNav.classList.add('show');
+        }
+        if (mainContent) {
+            mainContent.classList.add('with-bottom-nav');
+        }
     }
 }
 
