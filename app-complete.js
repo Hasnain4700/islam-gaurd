@@ -38,7 +38,7 @@ let userReports = {};
 
 // DOM elements
 let navButtons, sections, filterButtons, reportsGrid, loadingSpinner, reportForm, reportModal, closeModalBtn, toastContainer;
-let loginBtn, logoutBtn, userInfo, userAvatar, userName, profileNav;
+let loginBtn, logoutBtn;
 let profileAvatar, profileName, profileEmail, totalReports, pendingReports, resolvedReports, totalLikes, userReportsGrid;
 let bottomNavButtons, bottomProfileNav, bottomNav, mainContent;
 
@@ -61,10 +61,6 @@ function initializeApp() {
     // Auth elements
     loginBtn = document.getElementById('login-btn');
     logoutBtn = document.getElementById('logout-btn');
-    userInfo = document.getElementById('user-info');
-    userAvatar = document.getElementById('user-avatar');
-    userName = document.getElementById('user-name');
-    profileNav = document.getElementById('profile-nav');
 
     // Profile elements
     profileAvatar = document.getElementById('profile-avatar');
@@ -163,7 +159,6 @@ function setupEventListeners() {
 
     // Auth buttons
     loginBtn.addEventListener('click', handleGoogleSignIn);
-    logoutBtn.addEventListener('click', handleSignOut);
 }
 
 // Authentication functions
@@ -180,11 +175,6 @@ function initializeAuth() {
 }
 
 function updateUIForLoggedInUser(user) {
-    // Show user info and hide login button
-    userInfo.style.display = 'flex';
-    profileNav.style.display = 'block';
-    bottomProfileNav.style.display = 'flex';
-    
     // Show bottom navigation
     if (bottomNav) {
         bottomNav.classList.add('show');
@@ -193,9 +183,8 @@ function updateUIForLoggedInUser(user) {
         mainContent.classList.add('with-bottom-nav');
     }
     
-    // Update user info
-    userAvatar.src = user.photoURL || 'https://via.placeholder.com/40';
-    userName.textContent = user.displayName || 'User';
+    // Show profile button in bottom nav
+    bottomProfileNav.style.display = 'flex';
     
     // Update profile info
     profileAvatar.src = user.photoURL || 'https://via.placeholder.com/100';
@@ -207,9 +196,7 @@ function updateUIForLoggedInUser(user) {
 }
 
 function updateUIForLoggedOutUser() {
-    // Hide user info and show login button
-    userInfo.style.display = 'none';
-    profileNav.style.display = 'none';
+    // Hide profile button in bottom nav
     bottomProfileNav.style.display = 'none';
     
     // Hide bottom navigation
@@ -902,8 +889,9 @@ function createUserReportCard(report) {
     `;
 }
 
-// Make showSection function global for onclick handlers
+// Make functions global for onclick handlers
 window.showSection = showSection;
+window.handleSignOut = handleSignOut;
 
 // Start the app when DOM is ready
 document.addEventListener('DOMContentLoaded', waitForFirebase);
