@@ -45,10 +45,31 @@
                                 </div>
                                 
                                 <div class="login-content" id="login-content">
-                                    <button class="google-signin-btn" id="login-btn">
+                                    <button class="google-signin-btn" id="google-login-btn">
                                         <i class="fab fa-google"></i>
                                         Sign in with Google
                                     </button>
+                                    
+                                    <div class="divider">
+                                        <span>or</span>
+                                    </div>
+                                    
+                                    <form class="email-login-form" id="email-login-form">
+                                        <div class="form-group">
+                                            <input type="email" id="email-input" placeholder="Email address" required>
+                                        </div>
+                                        <div class="form-group">
+                                            <input type="password" id="password-input" placeholder="Password" required>
+                                        </div>
+                                        <button type="submit" class="email-login-btn" id="email-login-btn">
+                                            <i class="fas fa-sign-in-alt"></i>
+                                            Sign In
+                                        </button>
+                                    </form>
+                                    
+                                    <div class="auth-switch">
+                                        <p>Don't have an account? <a href="#" id="show-signup" onclick="showSignupForm(event)">Sign up</a></p>
+                                    </div>
                                     
                                     <div class="login-benefits">
                                         <div class="benefit-item">
@@ -63,6 +84,34 @@
                                             <i class="fas fa-check-circle"></i>
                                             <span>Join the community</span>
                                         </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="signup-content" id="signup-content" style="display: none;">
+                                    <h3>Create Account</h3>
+                                    <p>Join our community to help protect the digital space</p>
+                                    
+                                    <form class="email-signup-form" id="email-signup-form">
+                                        <div class="form-group">
+                                            <input type="text" id="signup-name" placeholder="Full name" required>
+                                        </div>
+                                        <div class="form-group">
+                                            <input type="email" id="signup-email" placeholder="Email address" required>
+                                        </div>
+                                        <div class="form-group">
+                                            <input type="password" id="signup-password" placeholder="Password (min 6 characters)" required minlength="6">
+                                        </div>
+                                        <div class="form-group">
+                                            <input type="password" id="signup-confirm-password" placeholder="Confirm password" required>
+                                        </div>
+                                        <button type="submit" class="email-signup-btn" id="email-signup-btn">
+                                            <i class="fas fa-user-plus"></i>
+                                            Create Account
+                                        </button>
+                                    </form>
+                                    
+                                    <div class="auth-switch">
+                                        <p>Already have an account? <a href="#" id="show-login" onclick="showLoginForm(event)">Sign in</a></p>
                                     </div>
                                 </div>
                                 
@@ -238,76 +287,4 @@
                                 View Reported Content
                             </a>
                         </div>
-                    </div>
-                    
-                    <div class="interactions">
-                        <div class="like-section">
-                            <button class="like-btn" id="like-btn">
-                                <i class="far fa-heart"></i>
-                                <span id="like-count">0</span>
-                            </button>
-                        </div>
-                        
-                        <!-- Status Change Section (only for report owner) -->
-                        <div class="status-change-section" id="status-change-section" style="display: none;">
-                            <h4>Update Status</h4>
-                            <p style="color: #666; margin-bottom: 1rem; font-size: 0.9rem;">
-                                Mark this report as resolved if the content has been removed or action has been taken.
-                            </p>
-                            <div class="status-buttons">
-                                <button class="status-btn" data-status="pending">Keep Pending</button>
-                                <button class="status-btn resolved" data-status="resolved">Mark as Resolved</button>
-                            </div>
-                        </div>
-                        
-                        <div class="comments-section">
-                            <h4>Comments</h4>
-                            <div class="comment-form">
-                                <input type="text" id="comment-input" placeholder="Add a comment...">
-                                <button id="add-comment-btn">
-                                    <i class="fas fa-paper-plane"></i>
-                                </button>
-                            </div>
-                            <div class="comments-list" id="comments-list">
-                                <!-- Comments will be loaded here -->
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Bottom Navigation -->
-        <nav class="bottom-nav">
-            <button class="bottom-nav-btn active" data-section="home">
-                <i class="fas fa-home"></i>
-                <span>Home</span>
-            </button>
-            <button class="bottom-nav-btn" data-section="reports">
-                <i class="fas fa-list"></i>
-                <span>Reports</span>
-            </button>
-            <button class="bottom-nav-btn" data-section="submit">
-                <i class="fas fa-plus"></i>
-                <span>Submit</span>
-            </button>
-            <button class="bottom-nav-btn" data-section="profile" id="bottom-profile-nav" style="display: none;">
-                <i class="fas fa-user"></i>
-                <span>Profile</span>
-            </button>
-        </nav>
-
-        <!-- Toast Notifications -->
-        <div class="toast-container" id="toast-container"></div>
-    </div>
-
-    <!-- Firebase SDK -->
-    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-analytics-compat.js"></script>
-    
-    <!-- Complete App Script -->
-    <script src="app-complete.js"></script>
-</body>
-</html>
+             
