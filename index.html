@@ -18,18 +18,8 @@
                     <h1>Islam Guard</h1>
                 </div>
                 <nav class="nav">
-                    <button class="nav-btn" data-section="profile" id="profile-nav" style="display: none;">
-                        <i class="fas fa-user"></i>
-                        Profile
-                    </button>
+                    <!-- No header navigation buttons -->
                 </nav>
-                
-                <!-- User Info / Login -->
-                <div class="user-info" id="user-info" style="display: none;">
-                    <img class="user-avatar" id="user-avatar" src="" alt="User Avatar">
-                    <span class="user-name" id="user-name"></span>
-                    <button class="logout-btn" id="logout-btn">Logout</button>
-                </div>
             </div>
         </header>
 
@@ -189,6 +179,10 @@
                         <div class="profile-info">
                             <h2 id="profile-name">Loading...</h2>
                             <p class="profile-email" id="profile-email">Loading...</p>
+                            <button class="logout-btn" id="logout-btn" onclick="handleSignOut()">
+                                <i class="fas fa-sign-out-alt"></i>
+                                Logout
+                            </button>
                         </div>
                     </div>
                     
