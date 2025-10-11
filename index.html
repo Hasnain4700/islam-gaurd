@@ -107,6 +107,22 @@
                     </div>
                 </div>
                 
+                <!-- Resolved Reports Counter -->
+                <div class="resolved-counter" id="resolved-counter" style="display: none;">
+                    <div class="counter-content">
+                        <div class="counter-icon">
+                            <i class="fas fa-check-circle"></i>
+                        </div>
+                        <div class="counter-info">
+                            <h3>Reports Resolved</h3>
+                            <div class="counter-number" id="resolved-count-display">0</div>
+                            <p class="motivational-message">
+                                "Every resolved report makes our community safer. Thank you for your contribution! 🙏"
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                
                 <div class="reports-container">
                     <div class="loading-spinner" id="loading-spinner">
                         <div class="spinner"></div>
@@ -254,6 +270,10 @@
                             <p style="color: #666; margin-bottom: 1rem; font-size: 0.9rem;">
                                 Mark this report as resolved if the content has been removed or action has been taken.
                             </p>
+                            <div class="status-notice">
+                                <i class="fas fa-info-circle"></i>
+                                <span><strong>Note:</strong> When you mark a report as "Resolved", it will be automatically deleted from the system. This helps keep our community clean and organized! 🧹</span>
+                            </div>
                             <div class="status-buttons">
                                 <button class="status-btn" data-status="pending">Keep Pending</button>
                                 <button class="status-btn resolved" data-status="resolved">Mark as Resolved</button>
@@ -282,32 +302,4 @@
             <button class="bottom-nav-btn active" data-section="home">
                 <i class="fas fa-home"></i>
                 <span>Home</span>
-            </button>
-            <button class="bottom-nav-btn" data-section="reports">
-                <i class="fas fa-list"></i>
-                <span>Reports</span>
-            </button>
-            <button class="bottom-nav-btn" data-section="submit">
-                <i class="fas fa-plus"></i>
-                <span>Submit</span>
-            </button>
-            <button class="bottom-nav-btn" data-section="profile" id="bottom-profile-nav" style="display: none;">
-                <i class="fas fa-user"></i>
-                <span>Profile</span>
-            </button>
-        </nav>
-
-        <!-- Toast Notifications -->
-        <div class="toast-container" id="toast-container"></div>
-    </div>
-
-    <!-- Firebase SDK -->
-    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-analytics-compat.js"></script>
-    
-    <!-- Complete App Script -->
-    <script src="app-complete.js"></script>
-</body>
-</html>
+ 
