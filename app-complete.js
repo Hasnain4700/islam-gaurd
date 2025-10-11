@@ -38,7 +38,7 @@ let userReports = {};
 
 // DOM elements
 let navButtons, sections, filterButtons, reportsGrid, loadingSpinner, reportForm, reportModal, closeModalBtn, toastContainer;
-let loginBtn, logoutBtn;
+let googleLoginBtn, emailLoginForm, emailSignupForm, showSignupLink, showLoginLink;
 let profileAvatar, profileName, profileEmail, totalReports, pendingReports, resolvedReports, totalLikes, userReportsGrid;
 let bottomNavButtons, bottomProfileNav, bottomNav, mainContent;
 
@@ -59,8 +59,11 @@ function initializeApp() {
     toastContainer = document.getElementById('toast-container');
 
     // Auth elements
-    loginBtn = document.getElementById('login-btn');
-    logoutBtn = document.getElementById('logout-btn');
+    googleLoginBtn = document.getElementById('google-login-btn');
+    emailLoginForm = document.getElementById('email-login-form');
+    emailSignupForm = document.getElementById('email-signup-form');
+    showSignupLink = document.getElementById('show-signup');
+    showLoginLink = document.getElementById('show-login');
 
     // Profile elements
     profileAvatar = document.getElementById('profile-avatar');
@@ -158,7 +161,11 @@ function setupEventListeners() {
     });
 
     // Auth buttons
-    loginBtn.addEventListener('click', handleGoogleSignIn);
+    googleLoginBtn.addEventListener('click', handleGoogleSignIn);
+    emailLoginForm.addEventListener('submit', handleEmailLogin);
+    emailSignupForm.addEventListener('submit', handleEmailSignup);
+    showSignupLink.addEventListener('click', showSignupForm);
+    showLoginLink.addEventListener('click', showLoginForm);
 }
 
 // Authentication functions
@@ -187,7 +194,7 @@ function updateUIForLoggedInUser(user) {
     bottomProfileNav.style.display = 'flex';
     
     // Update profile info
-    profileAvatar.src = user.photoURL || 'https://via.placeholder.com/100';
+    profileAvatar.src = user.photoURL || 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgdmlld0JveD0iMCAwIDEwMCAxMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIxMDAiIGhlaWdodD0iMTAwIiBmaWxsPSIjMTA5OTgxIi8+CjxjaXJjbGUgY3g9IjUwIiBjeT0iNDAiIHI9IjE1IiBmaWxsPSJ3aGl0ZSIvPgo8cGF0aCBkPSJNMjUgNzVjMC0xMy44IDExLjItMjUgMjUtMjVzMjUgMTEuMiAyNSA1djEwSDI1Vjc1WiIgZmlsbD0id2hpdGUiLz4KPC9zdmc+';
     profileName.textContent = user.displayName || 'User';
     profileEmail.textContent = user.email || '';
     
@@ -237,6 +244,141 @@ async function handleSignOut() {
         console.error('Error signing out:', error);
         showToast('Failed to sign out. Please try again.', 'error');
     }
+}
+
+// Email/Password Authentication
+async function handleEmailLogin(e) {
+    e.preventDefault();
+    
+    const email = document.getElementById('email-input').value;
+    const password = document.getElementById('password-input').value;
+    const loginBtn = document.getElementById('email-login-btn');
+    
+    if (!email || !password) {
+        showToast('Please fill in all fields', 'error');
+        return;
+    }
+    
+    // Store original text before try block
+    const originalText = loginBtn.innerHTML;
+    
+    try {
+        // Show loading state
+        loginBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Signing in...';
+        loginBtn.disabled = true;
+        
+        // Sign in with email and password
+        await auth.signInWithEmailAndPassword(email, password);
+        
+        // Clear form fields
+        document.getElementById('email-input').value = '';
+        document.getElementById('password-input').value = '';
+        
+        showToast('Successfully signed in!', 'success');
+        
+    } catch (error) {
+        console.error('Error signing in:', error);
+        let errorMessage = 'Failed to sign in. Please try again.';
+        
+        if (error.code === 'auth/user-not-found') {
+            errorMessage = 'No account found with this email. Please sign up first.';
+        } else if (error.code === 'auth/wrong-password') {
+            errorMessage = 'Incorrect password. Please try again.';
+        } else if (error.code === 'auth/invalid-email') {
+            errorMessage = 'Invalid email address.';
+        } else if (error.code === 'auth/too-many-requests') {
+            errorMessage = 'Too many failed attempts. Please try again later.';
+        }
+        
+        showToast(errorMessage, 'error');
+    } finally {
+        // Reset button state
+        loginBtn.innerHTML = originalText;
+        loginBtn.disabled = false;
+    }
+}
+
+async function handleEmailSignup(e) {
+    e.preventDefault();
+    
+    const name = document.getElementById('signup-name').value;
+    const email = document.getElementById('signup-email').value;
+    const password = document.getElementById('signup-password').value;
+    const confirmPassword = document.getElementById('signup-confirm-password').value;
+    const signupBtn = document.getElementById('email-signup-btn');
+    
+    if (!name || !email || !password || !confirmPassword) {
+        showToast('Please fill in all fields', 'error');
+        return;
+    }
+    
+    if (password !== confirmPassword) {
+        showToast('Passwords do not match', 'error');
+        return;
+    }
+    
+    if (password.length < 6) {
+        showToast('Password must be at least 6 characters', 'error');
+        return;
+    }
+    
+    // Store original text before try block
+    const originalText = signupBtn.innerHTML;
+    
+    try {
+        // Show loading state
+        signupBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Creating account...';
+        signupBtn.disabled = true;
+        
+        // Create user with email and password
+        const userCredential = await auth.createUserWithEmailAndPassword(email, password);
+        const user = userCredential.user;
+        
+        // Update user profile with display name
+        await user.updateProfile({
+            displayName: name
+        });
+        
+        // Clear form fields
+        document.getElementById('signup-name').value = '';
+        document.getElementById('signup-email').value = '';
+        document.getElementById('signup-password').value = '';
+        document.getElementById('signup-confirm-password').value = '';
+        
+        showToast('Account created successfully!', 'success');
+        
+    } catch (error) {
+        console.error('Error creating account:', error);
+        let errorMessage = 'Failed to create account. Please try again.';
+        
+        if (error.code === 'auth/email-already-in-use') {
+            errorMessage = 'An account with this email already exists. Please sign in instead.';
+        } else if (error.code === 'auth/invalid-email') {
+            errorMessage = 'Invalid email address.';
+        } else if (error.code === 'auth/weak-password') {
+            errorMessage = 'Password is too weak. Please choose a stronger password.';
+        }
+        
+        showToast(errorMessage, 'error');
+    } finally {
+        // Reset button state
+        signupBtn.innerHTML = originalText;
+        signupBtn.disabled = false;
+    }
+}
+
+// Show signup form
+function showSignupForm(e) {
+    e.preventDefault();
+    document.getElementById('login-content').style.display = 'none';
+    document.getElementById('signup-content').style.display = 'block';
+}
+
+// Show login form
+function showLoginForm(e) {
+    e.preventDefault();
+    document.getElementById('signup-content').style.display = 'none';
+    document.getElementById('login-content').style.display = 'block';
 }
 
 // Report submission
@@ -737,161 +879,4 @@ function initializeAnimations() {
         });
     }, observerOptions);
     
-    document.addEventListener('DOMContentLoaded', () => {
-        const reportCards = document.querySelectorAll('.report-card');
-        reportCards.forEach(card => {
-            observer.observe(card);
-        });
-    });
-}
-
-// Home section functions
-function updateHomeLoginContent(user) {
-    const loginContent = document.getElementById('login-content');
-    const welcomeContent = document.getElementById('welcome-content');
-    const welcomeAvatar = document.getElementById('welcome-avatar');
-    const welcomeName = document.getElementById('welcome-name');
-    const welcomeEmail = document.getElementById('welcome-email');
-    
-    if (user) {
-        // User is logged in
-        loginContent.style.display = 'none';
-        welcomeContent.style.display = 'block';
-        
-        welcomeAvatar.src = user.photoURL || 'https://via.placeholder.com/50';
-        welcomeName.textContent = `Welcome back, ${user.displayName || 'User'}!`;
-        welcomeEmail.textContent = user.email || '';
-    } else {
-        // User is not logged in
-        loginContent.style.display = 'block';
-        welcomeContent.style.display = 'none';
-    }
-}
-
-function loadHomeStats() {
-    // Update statistics from reports data
-    if (reportsData && Object.keys(reportsData).length > 0) {
-        const reportsArray = Object.values(reportsData);
-        const totalReports = reportsArray.length;
-        const resolvedReports = reportsArray.filter(r => r.status === 'resolved').length;
-        const uniqueUsers = new Set(reportsArray.map(r => r.reporterId)).size;
-        
-        // Animate the numbers
-        animateNumber('total-reports-count', totalReports);
-        animateNumber('resolved-count', resolvedReports);
-        animateNumber('active-users', uniqueUsers);
-    }
-}
-
-function animateNumber(elementId, targetNumber) {
-    const element = document.getElementById(elementId);
-    if (!element) return;
-    
-    const startNumber = 0;
-    const duration = 2000; // 2 seconds
-    const increment = targetNumber / (duration / 16); // 60fps
-    let currentNumber = startNumber;
-    
-    const timer = setInterval(() => {
-        currentNumber += increment;
-        if (currentNumber >= targetNumber) {
-            currentNumber = targetNumber;
-            clearInterval(timer);
-        }
-        element.textContent = Math.floor(currentNumber);
-    }, 16);
-}
-
-// Profile functions
-function loadUserReports() {
-    if (!currentUser) return;
-    
-    const userReportsArray = Object.entries(reportsData)
-        .filter(([id, report]) => report.reporterId === currentUser.uid)
-        .map(([id, report]) => ({ id, ...report }));
-    
-    // Sort by creation date (newest first)
-    userReportsArray.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
-    
-    // Update statistics
-    updateProfileStats(userReportsArray);
-    
-    // Display user reports
-    displayUserReports(userReportsArray);
-}
-
-function updateProfileStats(userReports) {
-    const total = userReports.length;
-    const pending = userReports.filter(r => r.status === 'pending').length;
-    const resolved = userReports.filter(r => r.status === 'resolved').length;
-    const totalLikesCount = userReports.reduce((sum, r) => sum + (r.likes || 0), 0);
-    
-    totalReports.textContent = total;
-    pendingReports.textContent = pending;
-    resolvedReports.textContent = resolved;
-    totalLikes.textContent = totalLikesCount;
-}
-
-function displayUserReports(userReports) {
-    if (userReports.length === 0) {
-        userReportsGrid.innerHTML = `
-            <div class="no-reports">
-                <i class="fas fa-inbox"></i>
-                <h3>No reports submitted yet</h3>
-                <p>Start by submitting your first report!</p>
-            </div>
-        `;
-        return;
-    }
-    
-    userReportsGrid.innerHTML = userReports.map(report => createUserReportCard(report)).join('');
-    
-    // Add click listeners to user report cards
-    document.querySelectorAll('.user-report-card').forEach(card => {
-        card.addEventListener('click', () => {
-            const reportId = card.dataset.reportId;
-            openReportModal(reportId);
-        });
-    });
-}
-
-function createUserReportCard(report) {
-    const commentsCount = Object.keys(report.comments || {}).length;
-    const formattedDate = formatDate(report.createdAt);
-    
-    return `
-        <div class="report-card user-report-card" data-report-id="${report.id}">
-            <div class="report-header">
-                <h3 class="report-title">${escapeHtml(report.title)}</h3>
-                <span class="owner-badge">Your Report</span>
-            </div>
-            <div class="report-meta">
-                <span class="category-badge">${report.category.replace('-', ' ')}</span>
-                <span class="status-badge status-${report.status}">${report.status}</span>
-            </div>
-            <div class="report-description">
-                ${escapeHtml(report.description)}
-            </div>
-            <div class="report-footer">
-                <span class="report-date">${formattedDate}</span>
-                <div class="report-stats">
-                    <div class="stat-item">
-                        <i class="fas fa-heart"></i>
-                        <span>${report.likes || 0}</span>
-                    </div>
-                    <div class="stat-item">
-                        <i class="fas fa-comment"></i>
-                        <span>${commentsCount}</span>
-                    </div>
-                </div>
-            </div>
-        </div>
-    `;
-}
-
-// Make functions global for onclick handlers
-window.showSection = showSection;
-window.handleSignOut = handleSignOut;
-
-// Start the app when DOM is ready
-document.addEventListener('DOMContentLoaded', waitForFirebase);
+    documen
