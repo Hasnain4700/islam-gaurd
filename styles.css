@@ -1345,6 +1345,27 @@ body {
 .profile-email {
     color: #6b7280;
     font-size: 1rem;
+    margin-bottom: 1rem;
+}
+
+.profile-info .logout-btn {
+    background: #ef4444;
+    color: white;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 25px;
+    cursor: pointer;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    font-size: 0.9rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.profile-info .logout-btn:hover {
+    background: #dc2626;
+    transform: translateY(-1px);
 }
 
 .profile-stats {
