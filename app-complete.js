@@ -341,6 +341,17 @@ function displayReports() {
         .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
 
     const filteredReports = filterReports(reportsArray);
+    
+    // Show/hide resolved counter based on filter
+    const resolvedCounter = document.getElementById('resolved-counter');
+    if (currentFilter === 'resolved') {
+        // Show resolved counter with motivational message
+        resolvedCounter.style.display = 'block';
+        updateResolvedCounter();
+    } else {
+        resolvedCounter.style.display = 'none';
+    }
+    
     reportsGrid.innerHTML = filteredReports.map(report => createReportCard(report)).join('');
 
     // Add click listeners to report cards
@@ -493,25 +504,38 @@ function setupStatusChangeButtons(reportId) {
 async function updateReportStatus(reportId, newStatus) {
     try {
         const reportRef = database.ref(`reports/${reportId}`);
-        await reportRef.update({
-            status: newStatus,
-            updatedAt: new Date().toISOString()
-        });
         
-        // Update UI
-        document.getElementById('modal-status').textContent = newStatus;
-        document.getElementById('modal-status').className = `status-badge status-${newStatus}`;
-        
-        // Update status buttons
-        const statusButtons = document.querySelectorAll('.status-btn');
-        statusButtons.forEach(btn => {
-            btn.classList.remove('active');
-            if (btn.dataset.status === newStatus) {
-                btn.classList.add('active');
-            }
-        });
-        
-        showToast(`Report marked as ${newStatus}!`, 'success');
+        if (newStatus === 'resolved') {
+            // Delete the report when marked as resolved
+            await reportRef.remove();
+            showToast('Report resolved and removed! Thank you for helping our community! 🎉', 'success');
+            
+            // Close modal after deletion
+            setTimeout(() => {
+                closeModal();
+            }, 2000);
+        } else {
+            // Just update status for other cases
+            await reportRef.update({
+                status: newStatus,
+                updatedAt: new Date().toISOString()
+            });
+            
+            // Update UI
+            document.getElementById('modal-status').textContent = newStatus;
+            document.getElementById('modal-status').className = `status-badge status-${newStatus}`;
+            
+            // Update status buttons
+            const statusButtons = document.querySelectorAll('.status-btn');
+            statusButtons.forEach(btn => {
+                btn.classList.remove('active');
+                if (btn.dataset.status === newStatus) {
+                    btn.classList.add('active');
+                }
+            });
+            
+            showToast(`Report marked as ${newStatus}!`, 'success');
+        }
         
     } catch (error) {
         console.error('Error updating status:', error);
@@ -868,30 +892,4 @@ function createUserReportCard(report) {
             <div class="report-meta">
                 <span class="category-badge">${report.category.replace('-', ' ')}</span>
                 <span class="status-badge status-${report.status}">${report.status}</span>
-            </div>
-            <div class="report-description">
-                ${escapeHtml(report.description)}
-            </div>
-            <div class="report-footer">
-                <span class="report-date">${formattedDate}</span>
-                <div class="report-stats">
-                    <div class="stat-item">
-                        <i class="fas fa-heart"></i>
-                        <span>${report.likes || 0}</span>
-                    </div>
-                    <div class="stat-item">
-                        <i class="fas fa-comment"></i>
-                        <span>${commentsCount}</span>
-                    </div>
-                </div>
-            </div>
-        </div>
-    `;
-}
-
-// Make functions global for onclick handlers
-window.showSection = showSection;
-window.handleSignOut = handleSignOut;
-
-// Start the app when DOM is ready
-document.addEventListener('DOMContentLoaded', waitForFirebase);
+       
