@@ -1042,6 +1042,30 @@ body {
     color: white;
 }
 
+.status-notice {
+    background: rgba(16, 185, 129, 0.1);
+    border: 1px solid rgba(16, 185, 129, 0.3);
+    border-radius: 10px;
+    padding: 1rem;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+    font-size: 0.9rem;
+    line-height: 1.5;
+}
+
+.status-notice i {
+    color: #10b981;
+    font-size: 1.1rem;
+    margin-top: 0.1rem;
+    flex-shrink: 0;
+}
+
+.status-notice span {
+    color: #374151;
+}
+
 /* Owner Badge */
 .owner-badge {
     background: linear-gradient(135deg, #f59e0b, #d97706);
@@ -1402,60 +1426,26 @@ body {
     margin-bottom: 1rem;
 }
 
-/* Responsive Updates */
-@media (max-width: 768px) {
-    .page-title {
-        font-size: 2.5rem;
-    }
-    
-    .page-subtitle {
-        font-size: 1.2rem;
-    }
-    
-    .login-page-container {
-        padding: 1rem;
-    }
-    
-    .profile-header {
-        flex-direction: column;
-        text-align: center;
-        gap: 1rem;
-        padding: 1.5rem;
-    }
-    
-    .profile-avatar {
-        width: 80px;
-        height: 80px;
-    }
-    
-    .user-info {
-        flex-direction: column;
-        gap: 0.5rem;
-    }
-    
-    .status-buttons {
-        justify-content: center;
-    }
-    
-    .auth-card {
-        padding: 2rem;
-        margin: 1rem;
-    }
-    
-    .profile-container {
-        padding: 1rem;
-    }
-    
-    .profile-stats {
-        grid-template-columns: repeat(2, 1fr);
-        gap: 0.75rem;
-    }
-    
-    .stat-card {
-        padding: 1rem;
-    }
-    
-    .stat-card .stat-number {
-        font-size: 1.5rem;
-    }
+/* Resolved Reports Counter */
+.resolved-counter {
+    background: linear-gradient(135deg, #10b981, #059669);
+    color: white;
+    padding: 2rem;
+    border-radius: 20px;
+    margin: 2rem 0;
+    box-shadow: 0 8px 25px rgba(16, 185, 129, 0.3);
+    animation: slideInUp 0.6s ease-out;
 }
+
+.counter-content {
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.counter-icon {
+    font-size: 3rem;
+    opacity: 0.9;
+    animation: pulse 2s infinite
